@@ -3,7 +3,7 @@
 BNF
 
 ```
-e ::= i | x | e + e | e * e | let rec x = e in e | λ x -> e | if e <= e then e else e | e e
+e ::= i | x | e + e | e - e | let rec x = e in e | λ x -> e | if e <= e then e else e | e e
 v ::= i | λ x -> e | e
 ```
 
