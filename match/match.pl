@@ -9,7 +9,7 @@
 term_expansion(A -- B, B :- A).
 
 lookup([X ⇓ V| _], X ⇓ V).
-lookup([X1 ⇓ _| Γ], X ⇓ V):- X1\==X, lookup(Γ, X ⇓ V)
+lookup([X1 ⇓ _| Γ], X ⇓ V):- X1\==X, lookup(Γ, X ⇓ V).
 
 %% evaluation rules
 
