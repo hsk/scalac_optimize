@@ -3,19 +3,19 @@
 BNF
 
 ```
-e ::= i | x | e + e | e * e | let rec x = e in e | fun x -> e | if e <= e then e else e | e e
-v ::= i | fun x -> e | e
+e ::= i | x | e + e | e * e | let rec x = e in e | λ x -> e | if e <= e then e else e | e e
+v ::= i | λ x -> e | e
 ```
 
 評価規則
 
 ```
---------------------------------------- (E-Int)
-_ ⊢ i ⇓ i
+----------------------------------------- (E-Int)
+C ⊢ i ⇓ i
 
 C ⊢ e1 ⇓ v1   C ⊢ e2 ⇓ v2   v1 <= v2
 C ⊢ e3 ⇓ v
---------------------------------------- (E-IfTrue)
+----------------------------------------- (E-IfTrue)
 C ⊢ if e1 <= e2 then e3 else e4 ⇓ v
 
 C ⊢ e1 ⇓ v1   C ⊢ e2 ⇓ v2   v1 > v2
@@ -36,7 +36,7 @@ lookup(C, x ⇓ v)
 C ⊢ x ⇓ v
 
 ----------------------------------------- (E-Fun)
-C ⊢ λ x -> e ⇓ c ⊢ λ x -> e
+C ⊢ λ x -> e ⇓ C ⊢ λ x -> e
 
 C ⊢ e1 ⇓ C2 ⊢ λ x -> e0   C ⊢ e2 ⇓ v2
 C2,x ⇓ v2 ⊢ e0 ⇓ v
@@ -45,8 +45,7 @@ C ⊢ e1 e2 ⇓ v
 
 C,x ⇓ v1 ⊢ e1 ⇓ v1   C,x ⇓ v1 ⊢ e2 ⇓ v2
 ----------------------------------------- (E-LetRec)
-C ⊢ let rec x = e1 in e2 ⇓ v2.
-
+C ⊢ let rec x = e1 in e2 ⇓ v2
 ```
 
 実行結果
