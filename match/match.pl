@@ -1,4 +1,4 @@
-:- initialization(main).
+%:- initialization(main).
 :- op(1200, xfx, [ -- ]).
 :- op(910, xfx, [ ⊢ ]).
 :- op(900, xfx, [ ⇓ ]).
@@ -17,21 +17,21 @@ integer(I)
 --%------------------------------------ (E-Int)
 _ ⊢ I ⇓ I.
 
-C ⊢ E1 ⇓ V1, C ⊢ E2 ⇓ V2, V1 =< V2,
+C ⊢ E1 ⇓ V1, C ⊢ E2 ⇓ V2, V1 =< V2,!,
 C ⊢ E3 ⇓ V
 --%------------------------------------ (E-IfTrue)
 C ⊢ if(E1 <= E2, E3, _) ⇓ V.
 
-C ⊢ E1 ⇓ V1, C ⊢ E2 ⇓ V2, V1 > V2,
+C ⊢ E1 ⇓ V1, C ⊢ E2 ⇓ V2, V1 > V2,!,
 C ⊢ E4 ⇓ V
 --%------------------------------------ (E-IfFalse)
 C ⊢ if(E1 <= E2, _, E4) ⇓ V.
 
-C ⊢ E1 ⇓ V1, C ⊢ E2 ⇓ V2, V is V1 + V2
+C ⊢ E1 ⇓ V1,!, C ⊢ E2 ⇓ V2,!, V is V1 + V2
 --%------------------------------------ (E-Plus)
 C ⊢ E1 + E2 ⇓ V.
 
-C ⊢ E1 ⇓ V1, C ⊢ E2 ⇓ V2, V is V1 - V2
+C ⊢ E1 ⇓ V1,!, C ⊢ E2 ⇓ V2,!, V is V1 - V2
 --%------------------------------------ (E-Minus)
 C ⊢ E1 - E2 ⇓ V.
 
@@ -41,30 +41,46 @@ C ⊢ X ⇓ V.
 
 !
 --%------------------------------------ (E-Fun)
-C ⊢ (λ X -> E) ⇓ (λ X -> E).
+_ ⊢ (λ X -> E) ⇓ (λ X -> E).
 
-C ⊢ E1 ⇓ (λ X -> E0), C ⊢ E2 ⇓ V2,
+C ⊢ E1 ⇓ (λ X -> E0),!, C ⊢ E2 ⇓ V2,!,
 [(X ⇓ V2)|C] ⊢ E0 ⇓ V
 --%------------------------------------ (E-App)
 C ⊢ (E1 $ E2) ⇓ V.
 
-[X ⇓ V1|C] ⊢ E1 ⇓ V1,
+[X ⇓ V1|C] ⊢ E1 ⇓ V1,!,
 [X ⇓ V1|C] ⊢ E2 ⇓ V2
 --%------------------------------------ (E-LetRec)
 C ⊢ letrec(X = E1 in E2) ⇓ V2.
 
+time(T) :-
+  get_time(Time),
+  T is truncate(Time * 1000) .
+
+loop(0,_) :- !.
+loop(N0,E) :-
+  copy_term(E,E1),
+  apply(E1,[]),!,
+  N1 is N0 - 1,
+  loop(N1,E).
+
 run(E) :-
-  write(E),
-  [] ⊢ E ⇓ V, write(' ⇓ '), write(V),
-  nl.
+  loop(5,(time(Start),
+  % write(E),
+  [] ⊢ E ⇓ _, % write(' ⇓ '), write(V), nl,
+  time(End),
+  T is End - Start,
+  write(T), write(" ms"), nl)).
+
 
 main :-
+/*
   run(if(1<=2,2,3)),
   run(if(2<=1,2,3)),
   run(1 + 2),
   run(1 - 2),
   run(λ x -> x),
   run((λ x -> x) $ 1),
-  run(letrec(sum=(λ x -> if(x <= 0, x, x+(sum $ (x - 1)))) in (sum $ 10))),
-  run(letrec(fib=(λ x -> if(x <= 1, x, (fib $ (x - 2))+(fib $ (x - 1)))) in (fib $ 20))),
+  run(letrec(sum=(λ x -> if(x <= 0, x, x+(sum $ (x - 1)))) in (sum $ 10))),*/
+  run(letrec(fib=(λ x -> if(x <= 1, x, (fib $ (x - 2))+(fib $ (x - 1)))) in (fib $ 30))),
   halt.
