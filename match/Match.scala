@@ -70,20 +70,21 @@ object Match extends App {
     ECall(EVar("fib"), EInt(30)))
 
   def bench(n:Int)(run: () =>Unit) {
-    val start = System.currentTimeMillis()
+    var start = System.currentTimeMillis()
+    var end = start
+    val start1 = start
     for(i <- 0 until n) {
-      val start = System.currentTimeMillis()
       run()
-      val end = System.currentTimeMillis()
+      end = System.currentTimeMillis()
       val interval = end - start
       println(interval + "ms")
+      start = end
     }
-    val end = System.currentTimeMillis()
-    val interval = end - start
+    val interval = end - start1
     println("avg "+(interval/n) + "ms")
   }
 
-  bench(5){()=>assert(eval(List(),ee)==VInt(832040))}
+  bench(10){()=>assert(eval(List(),ee)==VInt(832040))}
 
 }
 

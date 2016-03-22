@@ -62,7 +62,6 @@ let ee = ELetRec("fib",EAbs("x",
 
 let time() = int_of_float(Sys.time() *. 1000.)
 
-
 let bench n run =
   let start = time() in
   for i = 0 to n-1 do
@@ -75,7 +74,6 @@ let bench n run =
   let end1 = time() in
   let interval = end1 - start in
   Printf.printf "avg %d ms\n" (interval/n)
-
 
 let () =
   bench 5 (fun () ->

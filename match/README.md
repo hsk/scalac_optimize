@@ -54,40 +54,45 @@ C ⊢ let rec x = e1 in e2 ⇓ v2
 
 ```
 $ make
-scalac Match.scala
+scalac Match.scala -optimize
 ocamlopt match.ml -o match
 swipl -nodebug -g true -O -q --toplevel=main --stand_alone=true -o plmatch -c match.pl
 scala Match
-562ms
-519ms
-493ms
-483ms
-493ms
-avg 510ms
+457ms
+437ms
+414ms
+417ms
+404ms
+413ms
+413ms
+408ms
+416ms
+408ms
+avg 418ms
 ./match
-478 ms
-478 ms
+479 ms
+486 ms
 477 ms
 477 ms
 477 ms
-avg 477 ms
+avg 479 ms
 ./plmatch
-40040 ms
-40017 ms
-40018 ms
-40007 ms
-40090 ms
+37617 ms
+37589 ms
+37636 ms
+37615 ms
+37608 ms
 ```
 
 考察
 
-Scalaはscalacの最適化オプションを使っていません。最初は遅いのですがHotSpotが効いて速くなるのでしょう。
-OCamlはocamloptを使うと最適化出来てネイティブにコンパイルされHotSpotはないので最初から速いのでしょう。
-Prologはプログラムを非常に簡潔に記述出来ますが、やはり動的型で論理型言語なので遅いのは仕方ないでしょう。
+Scalaはscalacの-optimizeを使うと高速です。最初は遅いのですがHotSpotが効いて速くなるのでしょう。
+OCamlはocamloptを使うと最適化出来てネイティブにコンパイルされHotSpotはないので最初から高速です。
+Prologはプログラムを非常に簡潔に記述出来ますが、やはり動的型で論理型言語でapplyを使っているので遅いですね。
 
-Scalaはsbtを使えば、起動時の重さは軽減出来ます。初期実行時の遅さは仕方ないでしょう。
+Scalaはsbtを使えば、起動時の重さは軽減出来ます。初期実行時の遅さは仕方ありません。
+JVMがAndroidのようにコンパイル結果の保存をするようになれば起動時と初期実行時の速度低下を抑える事が出来るでしょう。
 起動の重さと初期実行時の重さが気になるような場合はLLVM化するのがよいのでしょう。
 コンパイル自体を避けるには動的に実行するのが良さそうです。
-JVMに期待する事は、Androidのようにコンパイル結果の保存をする事で起動時と初期実行時の速度低下を抑える仕組みです。
 
 様々なデータ構造を作り出してベンチマークを取ってみれば、マイクロベンチマークでは分からない問題点が出てくるかもしれません。
